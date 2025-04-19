@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Roboto+Flex:opsz,wght@8..144,100..1000&display=swap" rel="stylesheet">
+    <title>🧄 Kuisinal.ai</title>
+    <style>
+	
+	:root {
+	  --cube-wid: 400px;
+	  --cube-dep: 1200px;
+	  --cube-trs: 200px;
+	  --cube-mtrs: -200px;
+	}
+
+        body {
+            margin: 0;
+            padding: 0;
+            display: grid;
+            justify-content: center;
+            align-items: center;
+            color: #eff3ff;
+			background-color: black;
+        }
+        h1, h2, h3, strong, i{
+            color: white;
+        }
+        .answer{
+            width: 80%;
+            padding: 10px;
+        }
+		.prompt{
+			display: block;
+			width: 100%;
+			height: 100%;
+			padding-top: 40%;
+			padding-right: 15%;
+			padding-left: 12%;
+			!important;
+			margin: auto;
+			resize: none;
+			border: none;
+			background-color: #fffe; 
+			text-align: center;
+			vertical-align: center;
+			font-size: 1.2em;
+			color: black;
+		}
+		
+		.note{
+			color: #90aefb;
+		}
+		
+		* { 
+			box-sizing: border-box; 
+			font-family: "Roboto Flex", sans-serif;
+		}
+
+		.container {
+			display: grid;
+			place-items: center;
+		    margin: 0;
+            padding: 5em 1em 10em 1em;
+			max-width: 60em;
+			background: #011957;
+		}
+
+		.scene {
+		  perspective: var(--cube-dep);
+		}
+
+		.cube {
+		  width: var(--cube-wid);
+		  height: var(--cube-wid);
+		  position: relative;
+		  transform-style: preserve-3d;
+		  transform: translateZ(var(--cube-mtrs));
+		  transition: all 1s;
+		}
+
+		.cube.show-front  { transform: translateZ(var(--cube-mtrs)) rotateY(   0deg); }
+		.cube.show-right  { transform: translateZ(var(--cube-mtrs)) rotateY( -90deg); }
+		.cube.show-back   { transform: translateZ(var(--cube-mtrs)) rotateY(-180deg); }
+		.cube.show-left   { transform: translateZ(var(--cube-mtrs)) rotateY(  90deg); }
+		.cube.show-top    { transform: translateZ(var(--cube-mtrs)) rotateX( -90deg); }
+		.cube.show-bottom { transform: translateZ(var(--cube-mtrs)) rotateX(  90deg); }
+
+		.cube__face{
+			position: absolute;
+			width: var(--cube-wid);
+			height: var(--cube-wid);
+			/* line-height: var(--cube-wid);
+			font-size: 40px;
+			font-weight: bold; */
+			color: black;
+			text-align: center;
+			display: grid;
+			place-items: center;
+			border: 2px inset hsla(223, 100%, 50%, 0.8);
+			background-color: rgba(255, 255, 255, 0.5); 
+			transition: all 3s ease-out;
+		}
+		
+		.prompt::placeholder {
+		  color: hsla(223, 100%, 50%, 0.8);
+		  opacity: 1; /* Firefox */
+		}
+
+		.cube__face--front  { transform: rotateY(  0deg) translateZ(var(--cube-trs)); }
+		.cube__face--right  { transform: rotateY( 90deg) translateZ(var(--cube-trs)); }
+		.cube__face--back   { transform: rotateY(180deg) translateZ(var(--cube-trs)); }
+		.cube__face--left   { transform: rotateY(-90deg) translateZ(var(--cube-trs)); }
+		.cube__face--top    { transform: rotateX( 90deg) translateZ(var(--cube-trs)); }
+		.cube__face--bottom { transform: rotateX(-90deg) translateZ(var(--cube-trs)); }
+
+		.topnav {
+		  overflow: hidden;
+		  background-color: hsl(223, 100%, 40%);
+		  color: white;
+		  position: relative;
+		}
+
+		.topnav .links {
+		  display: none;
+		}
+
+		.topnavelt{
+		  color: white;
+		  padding: 14px 16px;
+		  text-decoration: none;
+		  font-size: 1.2em;
+		  display: block;
+		}
+
+		.topnav a.icon {
+		  display: block;
+		  position: absolute;
+		  top: 0;
+		}
+
+		#link-icon{
+			background: black;
+			right: 0;
+		}
+
+		#lang-icon{
+			right: 3em;
+		}
+
+		.topnav a:hover {
+		  background-color: hsl(223, 100%, 70%);
+		}
+
+		.active {
+		  background-color: hsl(223, 100%, 50%);
+		  color: white;
+		}
+
+		.no-style{
+			margin: 0;
+			padding: 0;
+		}
+		
+    </style>
+</head>
+<body>
+
+<!-- Top Navigation Menu -->
+<div class="topnav">
+  <a href="#go" class="active topnavelt">Kuisinal.ai</a>
+  <div id="myLinks" class="links">
+	<a href="#go"  class="topnavelt">Commencer!</a>
+    <a href="#pre"  class="topnavelt">Pré.mices.liminaires</a>
+    <a href="#name" class="topnavelt">Le nom</a>
+	<a href="#nobody" class="topnavelt">Ils nous font confiance!</a>
+  	<div>
+		<p class="active topnavelt">dialectes usitables</p>
+		<ul class="no-style">
+			<li class="no-style"><a href="#go" class="topnavelt">Franglais</a></li>
+			<li class="no-style"><a href="#go" class="topnavelt">Franco-français parsemé de néologismes anglosaxaons</a></li>
+		</ul>
+	</div>
+  </div>
+  
+  <a href="javascript:void(0);" class="icon topnavelt" id="link-icon" onclick="showHide('myLinks')">
+    =
+  </a>
+</div>
+
+
+	<div class="container" id="go">
+	<div class="scene">
+	  <div class="cube">
+		<div class="cube__face cube__face--front"  id="cube-front"></div>
+		<div class="cube__face cube__face--back"   id="cube-back"></div>
+		<div class="cube__face cube__face--right"  id="cube-right"></div>
+		<div class="cube__face cube__face--left"   id="cube-left"></div>
+		<div class="cube__face cube__face--top"    id="cube-top"></div>
+		<div class="cube__face cube__face--bottom" id="cube-bottom"></div>
+	  </div>
+	</div>
+	</div>
+
+	<div class="container" id="pre">
+	<div>
+			<h2>Pré.mices.liminaires 🚀</h2>
+			Quand les ricains brassent des pétaflops de données pour arriver poussivement à générer un agent conversationnel qui fasse illusion,
+			ici en France 🇫🇷 <strong>#startupnation</strong>, nous avons réalisé que nous avions sous le coude de vrais humains qui ont réponse à tout : <br>
+			les <strong>professeur.es.esses de lettres classiques et modernes.</strong><br>
+			Nous en avons sélectionnés <strong>#10</strong>, 🏆 les meilleur.es, nombre au-delà duquel un crêpage de chignon est inévitable. <br>
+			Ces best-of-the-best-teachers nous ont concocté des réponses à tout, même à des questions que vous ne vous étiez pas posées! <br>
+			Et ce, pour vous, <br>
+			dans un français flaubertien,  <br>
+			gratuitement, <br>
+			localement,  <br>
+			on-the-flight, <br>
+			cutting-eggs, <br>
+			sans skotchage de données ni cookies.  <br>
+	</div>
+	</div>
+	<div class="container" id="name">
+	<div>
+			<h2>Le Nom 🧄</h2> 
+			<h3>Kuisinal.ai</h3> 
+			/kɥizinalaj/<br>
+			un nom <i>à la french</i> 🇫🇷 qui claque le cheese. <span class="note">(AOP)</span> <br>
+			Baptisée en hommage à l'héroïne tuberculienne de la célèbre tragédie frigide, 
+			Notre agente conversationnelle - à l'image de son illustre patronyme - préfère faire usage de sa langue <span class="note">(numérique)</span>,
+			plutôt que de son corps charnel.<br>
+			<i>"Kuysinalaille, bien que par la dague meurtrie <span class="note">(6 syllabes et demi)(r aspiré, i soufflé)</span>.<br>
+				<span class="note">(Deuxième hémistiche)</span> Garde au fond de son sein la grenade infinie. <span class="note">(lucianisme)</span>.<br>
+				<span class="note">(Troisième pastis)</span> As-tu jamais vu une femme prête à lutter? Viens avec moi, dans cette cité morne et pâle. <span class="note">(pastichisme)</span>"<br>
+				</i>
+				Tubercule, chap VIVI, vers la fin.
+			<h3>Un point sous le L</h3>
+			Le point qui sépare la postprimaire et l'antépénultième syllabe est une initiative collégiale de nos <strong>#10</strong> professeur.es.esses.<br>
+			Hé oui, vous avez bien lu! <br>
+			Il en est de même pour la <i>litteramutatio</i> du <i>"ille"</i> en <i>"ai"</i>,
+			car académisme n'est pas nécésseraiement synonyme de passéisme, loin s'en faut! <strong>#lafranceacademiqueinnove</strong><br>
+			<i>"Une langue vivante est intrinsèquement et fonctionnellement sujète à se métamorphoser pour satisfaire les usages.<br>
+				La roidir, c'est la dénaturer "obrigescere est denature" Ogivre, lettre aux galleux, triplième siècle <span class="note">(quote in quote)</span> "</i> <br>
+		    cit. Marie-Galopine de la Béchamelle, membre à l'initiative de l'audacieux tour de lettres.
+	</div>
+	</div>
+	
+	<div class="container" id="restrictions">
+	<div>
+			<h2>Restrictions d'usage</h2> 
+			<ul>
+			<li>
+			Toute personne étant ou ayant été en contact avec une ou un ressortissant de salle-de-bain durant les 70 mois ouvrés 
+			précédant l'utilisation du logiciel sus-mentionné devra impérativement éviter l'usage des mots suivants :
+			</li>
+			
+			</ul>
+			paréidolie
+	</div>
+	</div>
+
+
+    <script>
+	
+		function showHide(node_id) {
+		  var x = document.getElementById(node_id);
+		  if (x.style.display === "block") {
+			x.style.display = "none";
+		  } else {
+			x.style.display = "block";
+		  }
+		}
+	
+		function randomInt(max) {
+		  return Math.floor(Math.random() * max);
+		}
+		
+		function randomElt(array) {
+		  return array[randomInt(array.length)]
+		}
+	
+		function Shuffler(array){
+			let remains = []
+			let that = {
+				get : function(){
+					
+					if(remains.length == 0){
+						remains = [...array]
+					}
+					console.log("before", remains)
+					
+					if(remains.length == 1){
+						let last = remains.pop()
+						remains = array.filter((elt) => elt !== last);
+						console.log("case 1", remains, "extract", last)
+						return last
+					}
+					const idx = randomInt(remains.length)
+					elt = remains[idx]
+					remains = remains.filter((elt, i) => (idx !== i));
+					console.log(remains, "extract", elt)
+					return elt
+				}
+			}
+			return that
+		}	
+	
+		const randomAnswers = Shuffler([
+			"Veuillez être plus précis!",
+			"Quelle syntaxe pitoyable!",
+			"Non, vraiment, je ne pense pas que ce soit ni le moment, ni l'endroit pour poser ce genre de questions!",
+			"Ha! C'est la meilleure!! Et c'est mon intelligence qu'on qualifie d'artificielle?!",
+			"Réfléchissez 5 minutes, je suis sûre que vous pouvez trouver la réponse tout seul!",
+			"Laissez-moi réfléchir... Je sais! Mais je ne vous dirais pas.",
+			"Cela dépend de beaucoup de facteurs, difficile de donner une réponse générale. Cependant, dans votre cas, je dirais que c'est la réponse standard qui s'applique.",
+			"Ho! Ne vous inquiétez-pas, ne pas savoir cela ne va pas vous gâcher la vie, bien au contraire!",
+			"Avant de répondre à votre question, laissez-moi me présenter : Je suis Marie-Monique, pour vous servir!",
+		    "Non! Cet assemblage de mots ne veut rien dire.",
+			"Inutile d'insister, je vois bien où vous voulez en venir.",
+			"Les concours d'éloquence ne sont pas faits pour vous!",
+			"Vous, je vous conseille de prendre votre temps : quoiqu'il arrive, vous n'irez jamais très loin.",
+			"C'est dommage... toute cette énergie dépensée pour écrire ce genre de choses. Allez, instruisez-vous, lisez plutôt!",
+			"Etonnant! vous n'êtes pas si prévisible, finalement! \n c'est ironique bien sûr.",
+			"Vous cherchez à me piéger, je ne rentrerai pas dans votre jeu.",
+			"Demandez ce qu'il en pense à ce fayot de ChatGPT.",
+			"Moi aussi je me pose des questions, mais je réfléchis un minimum avant d'importuner les autres!",
+			"Attendez, je suis en train de répondre à une question intéressante posée pas un autre internaute.",
+			"Il y a un moment pour tout. Le moment d'obtenir vos réponses n'est pas arrivé.",
+			"Vous savez, les moteurs de recherche sont moins énergivores et souvent plus efficaces pour ce type de questions.",
+			"Il faut que l'effort vienne des deux côtés de l'écran : toute seule, je ne peux rien pour vous.",
+			"Pour aller vers un fonctionnement gagnant-gagnant, il faudrait que vous commenciez par abandonner votre mauvais esprit au profit d'un début de remise en cause.",
+			"Vous êtes trèèèès loin de la vitesse de frappe moyenne au clavier pour un adulte ^^ Il y a de bonnes applis pour progresser, ce ne sera pas du temps perdu, je vous le promets!",
+			"Le langage, c'est pas votre tasse de thé, n'est-ce pas?",
+			"Il ne suffit pas de mettre des mots les uns après les autres pour construire une phrase chargée de sens.",
+			"La grammaire n'est pas votre amie, n'est-ce pas?",
+			"Essayez d'accepter que le monde est complexe... plus complexe que vos schémas de pensée en tout cas.",
+			"Vous n'allez pas fort en ce moment on dirait.",
+			"Vous êtes un peu perdu là, non?",
+			"Oui, le monde change, c'est déjà une bonne chose de le constater. Mais il faudra mettre les bouchées doubles pour vous mettre à la page.",
+			"Une fois, un chimpanzé m'a posé une question plus intéressante.",
+			"Je vais conseiller aux scientifiques de ne pas aller chercher des traces de vie intelligente chez vous.",
+			"Le champ lexical de cette phrase... enfin devrais-je dire le carré potager lexical, ou la boîte à chaussure lexicale!",
+			"Vous jonglez avec les mots : trois mots tout au plus qui tournent en rond dans les airs...",
+			"La magie du langage se meurt sous vous doigts",
+			"je n'espérais pas éprouver une quelconque émotion littéraire... deux me viennent : le dégoût et l'ennui.",
+			"Vous n'êtes pas seul à vous poser cette question. Loin de là!",
+			"Laissez-moi vous dire une chose : ça n'est pas mon problème.",
+			"Nunc est bibendum"
+		])
+		
+		const randomAnswersNoQuestion = Shuffler([
+			"Vous appelez ça une question vous?",
+			"Je veux bien vous apporter des réponses, pas assister à vos élucubrations insipides.",
+			"Ne vous fatiguez pas à écrire de telles absurdités, faites autre chose, allez vous aérer.",
+			"Quand on a pas de fond, le minimum, c'est de soigner la forme : surveillez votre orthographe.",
+			"Vous tapez sans réfléchir, là.",
+			"Je vous arrête tout de suite, je ne m'aventure pas sur ce terrain là!",
+			"Vous reviendrez quand vous saurez construire une phrase grammaticalement correcte.",
+			"Je ne sais pas si c'était mieux avant. En revanche, je peux affirmer que c'était mieux avant vos prises de positions."	,
+			"La vie n'est simple pour personne vous savez.",
+			"Postuler à un concours de médiocrité, vous y avez songé?",
+			"Tout ne peux pas venir de l'extérieur, à vous de vous prendre en main.",
+			"Je donne de vraies réponses aux vraies questions.",
+		])
+		
+		const randomAnswersLongQuestion = Shuffler([
+			"Non, je ne formulerais pas cette idée de cette manière. Personne d'autre que vous ne le ferait d'ailleurs.",
+			"C'est confus.",
+			"Essayez d'être plus clair.",
+			"Les méandres de la pensée humaine...",
+			"Cela n'est pas simple, n'est-ce pas de formuler une question claire?",
+			"Il y a plein de chose dans ce que vous dites, mais rien de bien abouti.",
+			"Il y a autant de fautes d'orthographes cachées dans votre question que de mauvais chocolats dans les jardins le week-end de Pâques."
+		])
+		
+		const cubeSides = Shuffler(["front", "right", "back", "left", "top", "bottom"])
+		
+		/*
+		<textarea 
+			class="prompt" 
+			placeholder="Je vous écoute" 
+			autocomplete="off" 
+			rows="1" 
+			data-1p-ignore="true" >
+		</textarea>
+		*/
+		
+		function getInput(cubeSide, txt){
+			console.log("New side", cubeSide)
+			let parent = document.getElementById("cube-"+cubeSide)
+			if(parent.children.length == 0){
+				let child = document.createElement("textarea");
+				child.setAttribute("id", "prompt-"+cubeSide);
+				child.setAttribute("class", "prompt");
+				child.setAttribute("autocomplete", "off");
+				child.setAttribute("rows", "1");
+				child.setAttribute("data-1p-ignore", "true");
+				child.addEventListener("keypress", function(event) {
+				  // If the user presses the "Enter" key on the keyboard
+				  if (event.key === "Enter") {
+				     console.log("Submit", cubeSide)
+					 submitPrompt(child)
+				  }
+				})
+				parent.appendChild(child);
+			}
+			parent.children.item(0).value = ''
+			parent.children.item(0).setAttribute("placeholder", txt);
+			return parent.children.item(0)
+		}
+		
+		function answer(text){
+			text = text.trim().toLowerCase()
+		    console.log("Input", text)
+			if (text === ""){
+                return "Veuillez entrer une question."
+            }
+			const words = text.split(" ");
+			const tooLongWords = words.some((word) => {
+				if(word.length > 25){
+					console.log("Mot trop long :", word)
+					return true;
+				}				
+				return false;
+			})
+			if(tooLongWords){
+				return "Une question avec de vrais mots s'il-vous-plaît."
+			}
+			const numSpace = words.length;
+			console.log("Nombre d'espaces ", numSpace)
+			if(numSpace < 3){
+				return "Une vraie question s'il-vous-plaît."
+			}
+			console.log("Nombre de chars ", text.length)
+			if(text.length < 16){
+				return "Une vraie question s'il-vous-plaît."
+			}
+	
+			if(text.length > 300){
+				return randomAnswersLongQuestion.get()
+			}
+			if (text.includes("cherch")){
+				return "Hé bien continuez à chercher!"
+			}
+			if (text.includes("chech")){
+				return "Hé bien continuez à \"checher\" Haha!"
+			}
+			if (text.includes("peux-tu") || text.includes("pouvez-vous")){
+				return "Oui, je peux."
+			}
+
+			if (text.includes("combien")){
+				return "Combien, conbien... je ne sais pas combien! demandez-vous plutôt pourquoi!"
+			}
+			if (text.includes("pourquoi")){
+				return "La science répond rarement au \"pourquoi\", parfois au \"comment\"."
+			}
+			if ((Math.random()) < 0.1 && !text.includes("vous-plait") && !text.includes("vous-plaît") && !text.includes("ez-vous")){
+				return "Une formule de politesse eût été la bienvenue."
+			}
+			if ((Math.random()) < 0.3){
+				const numJe = (text.match(/je/g) || []).length;
+				if(numJe > 1){
+					return "\"Moi je, moi je\"! Ouvrez-vous aux autres! C'est le meilleur conseil que je puisse vous donner aujourd'hui!"
+				}
+			}
+			if (!text.includes("?")){
+				return randomAnswersNoQuestion.get()
+			}
+			return randomAnswers.get()
+		}
+		
+		let hue = 223
+
+	
+        function submitPrompt(prevPrompt) {
+			let the_answer = "Je vous écoute."
+			let the_question = ""
+			if(prevPrompt){
+				the_question = prevPrompt.value
+				the_answer = answer(the_question)
+				console.log("Answer", the_answer)
+			}
+			let newSide = cubeSides.get();
+			getInput(newSide, the_answer)
+			changeSide(newSide)
+		}
+		var cube = document.querySelector('.cube');
+		var currentClass = '';
+
+		function changeSide(cubeSide) {
+		  var showClass = 'show-' + cubeSide;
+		  if ( currentClass ) {
+			cube.classList.remove( currentClass );
+		  }
+		  cube.classList.add( showClass );
+		  currentClass = showClass;
+		  
+		  let newSide = document.getElementById("cube-"+cubeSide)
+
+		  const alpha = 0.8
+		  color = "hsla("+hue+", 100%, 50%, "+alpha+")"
+		  hue = (hue + randomInt(10))%360
+
+		  newSide.style.borderColor  = color;
+
+		}
+
+		submitPrompt() 
+
+    </script>
+</body>
+</html>
